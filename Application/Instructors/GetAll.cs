@@ -10,9 +10,9 @@ namespace Application.Instructors
 {
     public class GetAll
     {
-        public class List: IRequest<IEnumerable<InstructorModel>> { }
+        public class Execute: IRequest<IEnumerable<InstructorModel>> { }
 
-        public class Handler : IRequestHandler<List, IEnumerable<InstructorModel>>
+        public class Handler : IRequestHandler<Execute, IEnumerable<InstructorModel>>
         {
             private readonly IInstructor _repository;
 
@@ -21,7 +21,7 @@ namespace Application.Instructors
                 _repository = instructorRepository;
             }
 
-            public async Task<IEnumerable<InstructorModel>> Handle(List request, CancellationToken cancellationToken)
+            public async Task<IEnumerable<InstructorModel>> Handle(Execute request, CancellationToken cancellationToken)
             {
                 return await _repository.GetAll();
             }

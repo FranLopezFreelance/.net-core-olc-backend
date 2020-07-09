@@ -11,9 +11,9 @@ namespace DataAccess.DapperConnection
     {
         private IDbConnection _connection;
         private readonly IOptions<ConnectionConfig> _config;
-        public FactoryConnection(IDbConnection connection)
+        public FactoryConnection(IOptions<ConnectionConfig> config)
         {
-            _connection = connection;
+            _config = config;
         }
         public void CloseConnection()
         {

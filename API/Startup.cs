@@ -53,7 +53,7 @@ namespace API
 
             //Cadena de conexion para Dapper
             services.AddOptions();
-            services.Configure<ConnectionConfig>(Configuration.GetSection("DefaultConnection"));
+            services.Configure<ConnectionConfig>(Configuration.GetSection("ConnectionStrings"));
 
             services.AddMediatR(typeof(GetAll.Handler).Assembly);
             services.AddControllers(opt => {
