@@ -10,13 +10,19 @@ using Microsoft.AspNetCore.Mvc;
 namespace API.Controllers
 {
     //https://localhost:44364/api/instructors
-    public class InstructorsController: ApiBaseController
+    public class InstructorsController : ApiBaseController
     {
         [HttpGet]
         public async Task<IEnumerable<InstructorModel>> GetAll()
         {
             var instructors = await Mediator.Send(new GetAll.Execute());
             return instructors.ToList();
+        }
+
+        [HttpGet("{id}")]
+        public async Task<ActionResult<InstructorModel>> Get(Guid id)
+        {
+            return await Mediator.Send(new Get.Execute { InstructorId = id });
         }
 
         [HttpPost]

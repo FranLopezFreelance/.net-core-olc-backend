@@ -45,10 +45,9 @@ namespace DataAccess.DapperConnection.Instructor
             try
             {
                 var connection = _connection.GetConnection();
-                var status = await connection.ExecuteAsync(storedPrecedure, new
-                {
-                    InstructorId = Id
-                }, commandType: CommandType.StoredProcedure);
+                var status = await connection.ExecuteAsync(storedPrecedure, 
+                    new { InstructorId = Id }, 
+                    commandType: CommandType.StoredProcedure);
                 _connection.CloseConnection();
                 return status;
             }
@@ -58,9 +57,22 @@ namespace DataAccess.DapperConnection.Instructor
             }
         }
 
-        public Task<InstructorModel> Get(Guid Id)
+        public async Task<InstructorModel> Get(Guid Id)
         {
-            throw new NotImplementedException();
+            var storedPrecedure = "usp_Get_Instructor";
+            try
+            {
+                var connection = _connection.GetConnection();
+                InstructorModel instructor = await connection.QueryFirstAsync(storedPrecedure,
+                    new { InstructorId = Id },
+                    commandType: CommandType.StoredProcedure);
+                _connection.CloseConnection();
+                return instructor;
+            }
+            catch(Exception e)
+            {
+                throw new Exception("No se pudo obtener el Instructor", e);
+            }
         }
 
         public async Task<IEnumerable<InstructorModel>> GetAll()
