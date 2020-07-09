@@ -1,11 +1,12 @@
-﻿using AutoMapper;
+﻿using Application.Courses;
+using AutoMapper;
 using Domain;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 
-namespace Application.Courses
+namespace Application
 {
     public class MappingProfile: Profile
     {
