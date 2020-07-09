@@ -63,7 +63,7 @@ namespace DataAccess.DapperConnection.Instructor
             try
             {
                 var connection = _connection.GetConnection();
-                InstructorModel instructor = await connection.QueryFirstAsync(storedPrecedure,
+                InstructorModel instructor = await connection.QueryFirstAsync<InstructorModel>(storedPrecedure,
                     new { InstructorId = Id },
                     commandType: CommandType.StoredProcedure);
                 _connection.CloseConnection();
@@ -82,7 +82,7 @@ namespace DataAccess.DapperConnection.Instructor
             try
             {
                 var connection = _connection.GetConnection();
-                instructorsList = await connection.QueryAsync<InstructorModel>(storedPrecedure, null, commandType: CommandType.StoredProcedure);
+                    instructorsList = await connection.QueryAsync<InstructorModel>(storedPrecedure, null, commandType: CommandType.StoredProcedure);
             }catch(Exception e)
             {
                 throw new Exception("Error en la consulta de datos. ", e);
@@ -101,12 +101,13 @@ namespace DataAccess.DapperConnection.Instructor
             try
             {
                 var connection = _connection.GetConnection();
-                var status = await connection.ExecuteAsync(storedProcedure, new
-                {
-                    InstructorId = instructorId,
-                    Name = name,
-                    LastName = lastName
-                }, commandType: CommandType.StoredProcedure);
+                var status = await connection.ExecuteAsync(storedProcedure, 
+                    new {
+                        InstructorId = instructorId,
+                        Name = name,
+                        LastName = lastName
+                    }, 
+                    commandType: CommandType.StoredProcedure);
                 _connection.CloseConnection();
                 return status;
             }
