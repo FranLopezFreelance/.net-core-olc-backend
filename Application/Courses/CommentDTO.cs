@@ -2,15 +2,14 @@
 using System.Collections.Generic;
 using System.Text;
 
-namespace Domain
+namespace Application.Courses
 {
-    public class Comment
+    public class CommentDTO
     {
         public Guid CommentId { get; set; }
         public string Student { get; set; }
         public int Rate { get; set; }
         public string Text { get; set; }
-        public Guid CourseId { get; set; }
-        public Course Course { get; set; }
+        //public Guid CourseId { get; set; }
     }
 }

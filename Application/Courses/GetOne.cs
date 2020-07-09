@@ -1,7 +1,9 @@
 ﻿using Application.ErrorsHandler;
+using AutoMapper;
 using DataAccess;
 using Domain;
 using MediatR;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Net;
@@ -13,28 +15,39 @@ namespace Application.Courses
 {
     public class GetOne
     {
-        public class Execute : IRequest<Course>
+        public class Execute : IRequest<CourseDTO>
         {
-            public int Id { get; set; }
+            public Guid Id { get; set; }
         }
 
-        public class Handler : IRequestHandler<Execute, Course>
+        public class Handler : IRequestHandler<Execute, CourseDTO>
         {
             private readonly DataContext _context;
-            public Handler(DataContext context)
+            private readonly IMapper _mapper;
+            public Handler(DataContext context, IMapper mapper)
             {
-                this._context = context;
+                _context = context;
+                _mapper = mapper;
             }
 
-            public async Task<Course> Handle(Execute request, CancellationToken cancellationToken)
+            public async Task<CourseDTO> Handle(Execute request, CancellationToken cancellationToken)
             {
-                var course = await _context.Course.FindAsync(request.Id);
+                //Obtengo el curso con su relacion
+                var course = await _context.Course
+                        .Include(c => c.CommentList)
+                        .Include(c => c.PromoPrice)
+                        .Include(c => c.InstructorsLink)
+                        .ThenInclude(il => il.Instructor)
+                        .FirstOrDefaultAsync(i => i.CourseId == request.Id);
+
                 if (course == null)
                 {
                     //throw new Exception("No existe el curso que desea eliminar");
                     throw new HandlerExceptions(HttpStatusCode.NotFound, new { message = "No se encontró el curso" });
                 }
-                return course;
+
+                var courseDTO = _mapper.Map<Course, CourseDTO>(course);
+                return courseDTO;
             }
         }
     }

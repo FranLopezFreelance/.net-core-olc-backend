@@ -1,4 +1,5 @@
-﻿using DataAccess;
+﻿using AutoMapper;
+using DataAccess;
 using Domain;
 using MediatR;
 using Microsoft.EntityFrameworkCore;
@@ -12,18 +13,26 @@ namespace Application.Courses
 {
     public class GetAll
     {
-        public class Execute : IRequest<List<Course>> { };
-        public class Handler : IRequestHandler<Execute, List<Course>>
+        public class Execute : IRequest<List<CourseDTO>> { };
+        public class Handler : IRequestHandler<Execute, List<CourseDTO>>
         {
             private readonly DataContext _context;
-            public Handler(DataContext context)
+            private readonly IMapper _mapper;
+            public Handler(DataContext context, IMapper mapper)
             {
-                this._context = context;
+                _context = context;
+                _mapper = mapper;
             }
-            public async Task<List<Course>> Handle(Execute request, CancellationToken cancellationToken)
+            public async Task<List<CourseDTO>> Handle(Execute request, CancellationToken cancellationToken)
             {
-                var courses = await _context.Course.ToListAsync();
-                return courses;
+                //Obtengo los cursos con sus relaciones
+                var courses = await _context.Course
+                        .Include(c => c.CommentList)
+                        .Include(c => c.PromoPrice)
+                        .Include(c => c.InstructorsLink)
+                        .ThenInclude(l => l.Instructor).ToListAsync();
+                var coursesDTO = _mapper.Map<List<Course>, List<CourseDTO>>(courses);
+                return coursesDTO;
             }
 
         }

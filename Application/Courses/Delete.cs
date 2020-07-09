@@ -3,6 +3,7 @@ using DataAccess;
 using MediatR;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Net;
 using System.Text;
 using System.Threading;
@@ -14,26 +15,47 @@ namespace Application.Courses
     {
         public class Execute: IRequest
         {
-            public int Id { get; set; }
+            public Guid Id { get; set; }
         }
         public class Handler : IRequestHandler<Execute>
         {
             private readonly DataContext _context;
             public Handler(DataContext context)
             {
-                this._context = context;
+                _context = context;
             }
 
             public async Task<Unit> Handle(Execute request, CancellationToken cancellationToken)
             {
-                var course = await this._context.Course.FindAsync(request.Id);
+                //Elimino los instructores 
+                var instructorsDB = _context.CourseInstructor.Where(ci => ci.CourseId == request.Id);
+                foreach(var instructorDB in instructorsDB)
+                {
+                    _context.CourseInstructor.Remove(instructorDB);
+                }
+                
+                //Elimino los comentarios
+                var commentsDB = _context.Comment.Where(c => c.CourseId == request.Id);
+                foreach(var commentDB in commentsDB)
+                {
+                    _context.Comment.Remove(commentDB);
+                }
+
+                //Elimino el precio
+                var priceDB = _context.Price.Where(p => p.CourseId == request.Id).FirstOrDefault();
+                if (priceDB != null)
+                {
+                    _context.Price.Remove(priceDB);
+                }
+                
+                //Elimino el curso
+                var course = await _context.Course.FindAsync(request.Id);
                 if(course == null)
                 {
-                    //throw new Exception("No existe el curso que desea eliminar");
                     throw new HandlerExceptions(HttpStatusCode.NotFound, new { message = "No se encontró el curso" });
                 }
-                this._context.Remove(course);
-                var status = await this._context.SaveChangesAsync();
+                _context.Remove(course);
+                var status = await _context.SaveChangesAsync();
                 if (status > 0)
                 {
                     return Unit.Value;

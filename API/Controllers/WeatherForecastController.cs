@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using DataAccess;
 using Domain;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 
@@ -11,6 +12,7 @@ namespace API.Controllers
 {
     [ApiController]
     [Route("[controller]")]
+    [AllowAnonymous]
     public class WeatherForecastController : ControllerBase
     {
         public readonly DataContext _context;
