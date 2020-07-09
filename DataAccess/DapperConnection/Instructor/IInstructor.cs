@@ -9,8 +9,8 @@ namespace DataAccess.DapperConnection.Instructor
     {
         Task<IEnumerable<InstructorModel>> GetAll();
         Task<InstructorModel> Get(Guid Id);
-        Task<int> Create(InstructorModel data);
-        Task<int> Update(InstructorModel data);
+        Task<int> Create(string name, string lastname);
+        Task<int> Update(Guid instructorId, string name, string lastname);
         Task<int> Delete(Guid Id);
     }
 }

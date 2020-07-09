@@ -24,9 +24,9 @@ namespace Application.Courses
             public decimal PromoPrice { get; set; }
         }
 
-        public class Validation: AbstractValidator<Execute>
+        public class Validator: AbstractValidator<Execute>
         {
-            public Validation()
+            public Validator()
             {
                 RuleFor(c => c.Title).NotEmpty();
                 RuleFor(c => c.Description).NotEmpty();
