@@ -1,4 +1,5 @@
 ﻿using Application.Courses;
+using DataAccess.DapperConnection.Pagination;
 using Domain;
 using MediatR;
 using Microsoft.AspNetCore.Authorization;
@@ -43,6 +44,12 @@ namespace API.Controllers
         public async Task<ActionResult<Unit>> Delete(Guid id)
         {
             return await Mediator.Send(new Delete.Execute { Id = id });
+        }
+
+        [HttpPost("pagination")]
+        public async Task<ActionResult<PaginationModel>> Pagination(CoursesPagination.Execute data)
+        {
+            return await Mediator.Send(data);
         }
     }
 }
