@@ -11,6 +11,7 @@ namespace Domain
         public int Rate { get; set; }
         public string Text { get; set; }
         public Guid CourseId { get; set; }
+        public DateTime? CreationDate { get; set; }
         public Course Course { get; set; }
     }
 }

@@ -37,9 +37,10 @@ namespace Application.Courses
         public class Handler : IRequestHandler<Execute>
         {
             private readonly DataContext _context;
+
             public Handler(DataContext context)
             {
-                this._context = context;
+                _context = context;
             }
 
             public async Task<Unit> Handle(Execute request, CancellationToken cancellationToken)
@@ -50,7 +51,8 @@ namespace Application.Courses
                     CourseId = courseGuid,
                     Title = request.Title,
                     Description = request.Description,
-                    PublicationDate = request.PublicationDate
+                    PublicationDate = request.PublicationDate,
+                    CreationDate = DateTime.UtcNow
                 };
 
                 _context.Course.Add(course);
@@ -81,10 +83,10 @@ namespace Application.Courses
                 
                 var status = await _context.SaveChangesAsync();
                 //Devueve la cantidad de operaciones exitosas que se realizaron en la DB
-                if (status > 0)
-                {
+                if (status > 0) {
                     return Unit.Value;
                 }
+
                 throw new Exception("Ocurrió un error al intentar guardar los datos");
             }
         }

@@ -10,5 +10,6 @@ namespace Application.Courses
         public string Name { get; set; }
         public string LastName { get; set; }
         public byte[] ProfileImg { get; set; }
+        public DateTime? CreationDate { get; set; }
     }
 }

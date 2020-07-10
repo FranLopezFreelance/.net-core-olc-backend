@@ -10,6 +10,7 @@ namespace Domain
         public string Name { get; set; }
         public string LastName { get; set; }
         public byte[] ProfileImg { get; set; }
+        public DateTime? CreationDate { get; set; }
         public ICollection<CourseInstructor> CourseLink { get; set; }
     }
 }
