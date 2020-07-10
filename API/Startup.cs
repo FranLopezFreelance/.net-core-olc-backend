@@ -30,6 +30,8 @@ using Microsoft.AspNetCore.Mvc.Authorization;
 using AutoMapper;
 using DataAccess.DapperConnection;
 using DataAccess.DapperConnection.Instructor;
+using Microsoft.OpenApi.Models;
+using DataAccess.DapperConnection.Pagination;
 
 namespace API
 {
@@ -78,6 +80,16 @@ namespace API
             services.AddAutoMapper(typeof(GetAll.Handler));
             services.AddTransient<IFactoryConnection, FactoryConnection>();
             services.AddScoped<IInstructor, InstructorRepository>();
+            services.AddScoped<IPagination, PaginationRepository>();
+
+            services.AddSwaggerGen(c => {
+                c.SwaggerDoc("v1", new OpenApiInfo {
+                    Title = "Servicios para mantenimiento de cursos",
+                    Version = "v1"
+                });
+                c.CustomSchemaIds(c => c.FullName);
+            });
+
             var builder = services.AddIdentityCore<User>();
             var identityBuilder = new IdentityBuilder(builder.UserType, builder.Services);
             identityBuilder.AddEntityFrameworkStores<DataContext>();
@@ -99,6 +111,11 @@ namespace API
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();
+            });
+
+            app.UseSwagger();
+            app.UseSwaggerUI(c => {
+                c.SwaggerEndpoint("/swagger/v1/swagger.json", "Documentación de la aplicación");
             });
         }
     }
